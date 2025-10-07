@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:profile/src/controller/controller.dart';
+import 'package:profile/src/view/theme_colors.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -17,24 +18,18 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
 
-   @override
+  late ThemeColors themeColors;
+
+  @override
   void initState() {
     super.initState();
     _profileController.addListener(_onUserChanged);
+    themeColors = ThemeColors(_profileController.dark);
   }
 
   void _onUserChanged() {
-    setState(() {}); 
+    setState(() {});
   }
-
-  Color get primaryColor =>
-      !_profileController.dark ? Colors.grey[900]! : Colors.grey[100]!;
-  Color get secondaryColor =>
-      !_profileController.dark ? Colors.grey[800]! : Colors.grey[100]!;
-  Color get backgroundColor =>
-      !_profileController.dark ? Colors.grey[100]! : Colors.grey[900]!;
-  Color get cardColor =>
-      !_profileController.dark ? Colors.white : Colors.grey[800]!;
 
   void _showEditDialog(String field) {
     TextEditingController dialogController = TextEditingController();
@@ -65,34 +60,42 @@ class _ProfilePageState extends State<ProfilePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: backgroundColor,
+        backgroundColor: themeColors.backgroundColor,
         title: Text(
           title,
           style: TextStyle(
-            color: primaryColor,
+            color: themeColors.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
         content: TextFormField(
-          style: TextStyle(color: primaryColor, decorationThickness: 0),
-          cursorColor: primaryColor,
+          style: TextStyle(
+            color: themeColors.primaryColor,
+            decorationThickness: 0,
+          ),
+          cursorColor: themeColors.primaryColor,
           controller: dialogController,
           decoration: InputDecoration(
             hintText: 'Digite o novo valor...',
-            hintStyle: TextStyle(color: primaryColor),
+            hintStyle: TextStyle(color: themeColors.primaryColor),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: primaryColor),
+              borderSide: BorderSide(color: themeColors.primaryColor),
             ),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar', style: TextStyle(color: primaryColor)),
+            child: Text(
+              'Cancelar',
+              style: TextStyle(color: themeColors.primaryColor),
+            ),
           ),
           TextButton(
-            style: TextButton.styleFrom(backgroundColor: secondaryColor),
+            style: TextButton.styleFrom(
+              backgroundColor: themeColors.secondaryColor,
+            ),
             onPressed: () {
               switch (field) {
                 case 'name':
@@ -110,7 +113,10 @@ class _ProfilePageState extends State<ProfilePage> {
               }
               Navigator.pop(context);
             },
-            child: Text('Salvar', style: TextStyle(color: backgroundColor)),
+            child: Text(
+              'Salvar',
+              style: TextStyle(color: themeColors.backgroundColor),
+            ),
           ),
         ],
       ),
@@ -132,22 +138,25 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: themeColors.backgroundColor,
       appBar: AppBar(
-        backgroundColor: backgroundColor,
-        title: Text('Perfil do Usuário', style: TextStyle(color: primaryColor)),
+        backgroundColor: themeColors.backgroundColor,
+        title: Text(
+          'Perfil do Usuário',
+          style: TextStyle(color: themeColors.primaryColor),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: _profileController.clear,
             tooltip: 'Resetar Perfil',
-            color: primaryColor,
+            color: themeColors.primaryColor,
           ),
           IconButton(
             icon: _profileController.dark
                 ? Icon(Icons.sunny)
                 : Icon(Icons.dark_mode),
-            color: primaryColor,
+            color: themeColors.primaryColor,
             onPressed: () {
               _profileController.updateColor(!_profileController.dark);
             },
@@ -162,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             if (_profileController.name.isNotEmpty)
               Card(
-                color: cardColor,
+                color: themeColors.cardColor,
                 child: Padding(
                   padding: EdgeInsets.all(16),
                   child: Column(
@@ -196,20 +205,23 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor,
+                          color: themeColors.primaryColor,
                         ),
                       ),
                       SizedBox(height: 8),
                       Text(
                         _profileController.email,
-                        style: TextStyle(fontSize: 16, color: primaryColor),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: themeColors.primaryColor,
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
             Card(
-              color: cardColor,
+              color: themeColors.cardColor,
               child: Padding(
                 padding: EdgeInsets.all(16),
                 child: Column(
@@ -220,7 +232,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: primaryColor,
+                        color: themeColors.primaryColor,
                       ),
                     ),
                     SizedBox(height: 16),
@@ -273,20 +285,23 @@ class _ProfilePageState extends State<ProfilePage> {
               '$label:',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: primaryColor,
+                color: themeColors.primaryColor,
               ),
             ),
           ),
           Expanded(
             flex: 3,
-            child: Text(value, style: TextStyle(color: primaryColor)),
+            child: Text(
+              value,
+              style: TextStyle(color: themeColors.primaryColor),
+            ),
           ),
           Expanded(
             flex: 1,
             child: IconButton(
               icon: Icon(Icons.edit, size: 18),
               onPressed: () => _showEditDialog(field),
-              color: primaryColor,
+              color: themeColors.primaryColor,
             ),
           ),
         ],
@@ -305,7 +320,7 @@ class _ProfilePageState extends State<ProfilePage> {
               'Idade:',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: primaryColor,
+                color: themeColors.primaryColor,
               ),
             ),
           ),
@@ -313,7 +328,7 @@ class _ProfilePageState extends State<ProfilePage> {
             flex: 2,
             child: Text(
               '${_profileController.age} anos',
-              style: TextStyle(color: primaryColor),
+              style: TextStyle(color: themeColors.primaryColor),
             ),
           ),
           Expanded(
@@ -323,12 +338,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 IconButton(
                   icon: Icon(Icons.remove),
                   onPressed: _profileController.decrementAge,
-                  color: primaryColor,
+                  color: themeColors.primaryColor,
                 ),
                 IconButton(
                   icon: Icon(Icons.add),
                   onPressed: _profileController.incrementAge,
-                  color: primaryColor,
+                  color: themeColors.primaryColor,
                 ),
               ],
             ),
