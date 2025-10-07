@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 class ProfileController extends ChangeNotifier {
@@ -7,13 +8,20 @@ class ProfileController extends ChangeNotifier {
   String _bio = '';
   int _age = 0;
   bool _dark = false;
-  
+  File? _image;
+
   String get name => _name;
   String get email => _email;
   String get phone => _phone;
   String get bio => _bio;
   int get age => _age;
   bool get dark => _dark;
+  File? get image => _image;
+
+  void updateProfileImage(File? newImage) {
+    _image = newImage;
+    notifyListeners();
+  }
 
   void updateColor(bool newName) {
     _dark = newName;
@@ -78,6 +86,9 @@ class ProfileController extends ChangeNotifier {
     _phone = '';
     _bio = '';
     _age = 0;
+    _dark = false;
+    _image = null;
+
     notifyListeners();
   }
   
