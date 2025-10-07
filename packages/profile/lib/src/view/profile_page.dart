@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:profile/src/controller/controller.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -119,54 +117,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-
-    await showModalBottomSheet(
-      backgroundColor: backgroundColor,
-      context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.photo_library, color: primaryColor),
-                title: Text('Galeria', style: TextStyle(color: primaryColor)),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final XFile? pickedFile = await _picker.pickImage(
-                    source: ImageSource.gallery,
-                  );
-                  if (pickedFile != null) {
-                    _profileController.updateProfileImage(
-                      File(pickedFile.path),
-                    );
-                  }
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.camera_alt, color: primaryColor),
-                title: Text('Câmera', style: TextStyle(color: primaryColor)),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final XFile? pickedFile = await _picker.pickImage(
-                    source: ImageSource.camera,
-                  );
-                  if (pickedFile != null) {
-                    _profileController.updateProfileImage(
-                      File(pickedFile.path),
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   void dispose() {
     _profileController.removeListener(_onUserChanged);
@@ -218,7 +168,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     children: [
                       GestureDetector(
-                        onTap: _pickImage,
+                        onTap: () => _profileController.selectProfileImage(
+                          context,
+                          themeColors.backgroundColor,
+                          themeColors.primaryColor,
+                        ),
                         child: CircleAvatar(
                           radius: 40,
                           backgroundColor: Colors.deepPurple[600],

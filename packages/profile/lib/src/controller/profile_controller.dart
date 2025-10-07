@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileController extends ChangeNotifier {
   String _name = '';
@@ -100,4 +101,51 @@ class ProfileController extends ChangeNotifier {
     'age': _age,
   };
 
+  Future<void> selectProfileImage(
+    BuildContext context,
+    Color backgroundColor,
+    Color primaryColor,
+  ) async {
+    final ImagePicker _picker = ImagePicker();
+
+    await showModalBottomSheet(
+      backgroundColor: backgroundColor,
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.photo_library, color: primaryColor),
+                title: Text('Galeria', style: TextStyle(color: primaryColor)),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final XFile? pickedFile = await _picker.pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  if (pickedFile != null) {
+                    updateProfileImage(File(pickedFile.path));
+                  }
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.camera_alt, color: primaryColor),
+                title: Text('Câmera', style: TextStyle(color: primaryColor)),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final XFile? pickedFile = await _picker.pickImage(
+                    source: ImageSource.camera,
+                  );
+                  if (pickedFile != null) {
+                    updateProfileImage(File(pickedFile.path));
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
