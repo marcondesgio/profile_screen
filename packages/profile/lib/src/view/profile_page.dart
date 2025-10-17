@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:profile/src/controller/controller.dart';
 import 'package:profile/src/view/theme_colors.dart';
@@ -23,6 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    _profileController.startTimer();
     _profileController.addListener(_onUserChanged);
     themeColors = ThemeColors(_profileController.dark);
   }
@@ -238,7 +240,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(height: 16),
                     _buildInfoRow('Nome', _profileController.name, 'name'),
                     _buildInfoRow('Email', _profileController.email, 'email'),
-                    _buildInfoRow('Telefone', _profileController.phone, 'phone'),
+                    _buildInfoRow(
+                      'Telefone',
+                      _profileController.phone,
+                      'phone',
+                    ),
                     _buildInfoRow('Bio', _profileController.bio, 'bio'),
                     _buildAgeSection(),
                   ],
@@ -267,6 +273,22 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: Text(
+                'Tempo restante: ${_profileController.formattedTime}',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: ColorsPalette.primaryButton,
+                ),
+              ),
+            ),
+            PrimaryButton(
+              title: 'Teste',
+              onPressed: () {},
+              isLoading: _profileController.isLoading,
             ),
           ],
         ),

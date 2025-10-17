@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +11,9 @@ class ProfileController extends ChangeNotifier {
   int _age = 0;
   bool _dark = false;
   File? _image;
+  Timer? _timer;
+  bool _isLoading = false;
+  int _seconds = 0;
 
   String get name => _name;
   String get email => _email;
@@ -18,6 +22,9 @@ class ProfileController extends ChangeNotifier {
   int get age => _age;
   bool get dark => _dark;
   File? get image => _image;
+  Timer? get timer => _timer;
+  bool get isLoading => _isLoading;
+  int get seconds => _seconds;
 
   void updateProfileImage(File? newImage) {
     _image = newImage;
@@ -33,39 +40,39 @@ class ProfileController extends ChangeNotifier {
     _name = newName;
     notifyListeners();
   }
-  
+
   void updateEmail(String newEmail) {
     _email = newEmail;
     notifyListeners();
   }
-  
+
   void updatePhone(String newPhone) {
     _phone = newPhone;
     notifyListeners();
   }
-  
+
   void updateBio(String newBio) {
     _bio = newBio;
     notifyListeners();
   }
-  
+
   void updateAge(int newAge) {
     _age = newAge;
     notifyListeners();
   }
-  
+
   void incrementAge() {
     _age++;
     notifyListeners();
   }
-  
+
   void decrementAge() {
     if (_age > 0) {
       _age--;
       notifyListeners();
     }
   }
-  
+
   void updateProfile({
     String? name,
     String? email,
@@ -80,7 +87,7 @@ class ProfileController extends ChangeNotifier {
     _age = age ?? _age;
     notifyListeners();
   }
-  
+
   void clear() {
     _name = '';
     _email = '';
@@ -92,7 +99,7 @@ class ProfileController extends ChangeNotifier {
 
     notifyListeners();
   }
-  
+
   Map<String, dynamic> get userData => {
     'name': _name,
     'email': _email,
@@ -147,5 +154,32 @@ class ProfileController extends ChangeNotifier {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void startTimer() {
+    _isLoading = true;
+    _seconds = 60;
+    notifyListeners();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _seconds--;
+      if (_seconds <= 0) {
+        timer.cancel();
+        _isLoading = false;
+        _seconds = 0;
+      }
+      notifyListeners();
+    });
+  }
+
+  String get formattedTime {
+    final minutes = (_seconds ~/ 60).toString().padLeft(2, '0');
+    final seconds = (_seconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
   }
 }
